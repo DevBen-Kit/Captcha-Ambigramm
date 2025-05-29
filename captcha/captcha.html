@@ -8,43 +8,143 @@
   <style type="text/css">
     html,
     body {
-      background: pink;
       margin: 0;
       padding: 0;
       font-family: sans-serif;
     }
 
     #captcha-container {
-      background: white;
+      position: relative;
       width: 390px;
       height: 300px;
+      overflow: hidden;
     }
 
-    /* Your style here... */
+    #div_image_rotation {
+      position: absolute;
+      text-align: center;
+      width: 100%;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9;
+    }
+
+    #div_image_container {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+    }
+
+    #div_image {
+      position: absolute;
+      width: 70%;
+      height: 90%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      top: 50%;
+      left: 50%;
+      transform: translateY(-50%) translateX(-50%);
+    }
+    
+    #span_ambi {
+      position: absolute;
+      font-weight: bold;
+    }
+
+    .btn_rotate {
+        background: white;
+        border: 1px solid #333;
+        border-radius: 5px;
+        padding: 2px 15px;
+        margin: 2px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn_rotate:hover {
+        background: #aaa;
+    }
   </style>
 </head>
 
 <body>
   <div id="captcha-container">
-    <!-- Add your CAPTCHA here: -->
-    Hello world!
-
-    <!-- We've added a sample button. Feel free to remove it: -->
-    <button id="solve">
-      Solve!
-    </button>
+    <div id="div_image_container">
+      <div id="div_image" style="background-image: url(ambigramm/BubbleButt.png);"></div>
+    </div>
+    <div id="div_image_rotation">
+      <button type="button" id="btn_rotate_right" class="btn_rotate">↶</button>
+      <button type="button" id="btn_rotate_left" class="btn_rotate">↷</button>
+      <button type="button" id="btn_rotate_submit" class="btn_rotate">Submit</button>
+    </div>
+    <span id="span_ambi">Please rotate the word "<span id="span_ambi_name">BubbleButt</span>" <u>perfectly horizontaly</u> so that it can be read clearly.</span>
   </div>
 
   <script type="text/javascript">
     (function(window, document){
-      // This is how you tell the parent window that the CAPTCHA was successful.
+      const divImageContainer = document.getElementById('div_image_container');
+      const divImage = document.getElementById('div_image');
+      const spanAmbi= document.getElementById('span_ambi_name');
+      const ambiImageList = [
+        'BubbleButt.png',
+        'MammaMia.png',
+        'NeverGonnaGiveYouUp.png',
+        'OmegaLul.png',
+        'PantsDown.png',
+        'RageQuit.png',
+        'Scientist.png',
+        'ShrekIsLife.png',
+        'Somebody.png'
+      ];
+
       function captchaSuccess() {
         window.top.postMessage("success", '*');
       }
+      function rotate(left) {
+        var rotation = divImageContainer.style.rotate.replace('deg', '');
 
-      // Your CAPTCHA code goes here, we've added a simple example below:
-      document.getElementById('solve')
-           .addEventListener('click', () => captchaSuccess());
+        rotation = Math.floor(rotation / 5) * 5;
+
+        divImageContainer.style.rotate = (rotation == "" ? 0 : rotation * 1) + (left ? 5 : -5) + "deg";
+      }
+      function rotateTo(degree) {
+        var rotation = divImageContainer.style.rotate.replace('deg', '');
+
+        divImageContainer.style.rotate = degree + "deg";
+      }
+
+      function refresh() {
+        const randomDegree = Math.floor(Math.random() * 135) + 45;
+        const randomOrientation = Math.round(Math.random()) * 2 - 1;
+        const randomIndex = Math.floor(Math.random() * ambiImageList.length);
+        const selectedImage = ambiImageList[randomIndex];
+
+        spanAmbi.innerText = selectedImage.replace('.png', '');
+        divImage.style.backgroundImage = 'url(ambigramm/' + selectedImage + ')';
+        
+        rotateTo(randomDegree * randomOrientation);
+      }
+
+      function checkSubmit() {
+        var rotation = divImageContainer.style.rotate.replace('deg', '');
+
+        if(rotation * 1 % 360 == 0)
+          captchaSuccess();
+        else
+          refresh();
+      }
+
+      document.getElementById('btn_rotate_left')
+           .addEventListener('click', () => rotate(true));
+      document.getElementById('btn_rotate_right')
+           .addEventListener('click', () => rotate(false));
+      document.getElementById('btn_rotate_submit')
+           .addEventListener('click', () => checkSubmit());
+
+      refresh();
 
     })(window, document);
   </script>

@@ -1,3 +1,7 @@
+# Ambigramm - Explaination
+An ambigram is a word or design that retains meaning when viewed from a different direction or perspective.
+All pictures are greated with this website: https://thedressedmolerat.github.io/ambigenerator/
+
 # Kitboga Code Jam
 "I'm not a robot!"
 

@@ -85,6 +85,8 @@
 
   <script type="text/javascript">
     (function(window, document){
+      var currentCount = 0;
+      const winCount = 3;
       const divImageContainer = document.getElementById('div_image_container');
       const divImage = document.getElementById('div_image');
       const spanAmbi= document.getElementById('span_ambi_name');
@@ -148,8 +150,14 @@
       function checkSubmit() {
         var rotation = divImageContainer.style.rotate.replace('deg', '');
 
-        if(rotation * 1 % 360 == 0)
-          captchaSuccess();
+        if(rotation * 1 % 360 == 0) {
+          currentCount++;
+
+          if(currentCount == winCount)
+            captchaSuccess();
+          else
+            refresh();
+        }
         else
           refresh();
       }

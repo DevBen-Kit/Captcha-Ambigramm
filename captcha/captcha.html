@@ -131,10 +131,13 @@
       }
 
       function refresh() {
-        const randomDegree = Math.floor(Math.random() * 135) + 45;
+        const randomDegree = Math.floor(Math.random() * 320) + 45;
         const randomOrientation = Math.round(Math.random()) * 2 - 1;
         const randomIndex = Math.floor(Math.random() * ambiImageList.length);
         const selectedImage = ambiImageList[randomIndex];
+
+        while (randomDegree + 25 > 180 && randomDegree - 25 < 180)
+          randomDegree = Math.floor(Math.random() * 320) + 45;
 
         spanAmbi.innerText = selectedImage.replace('.png', '');
         divImage.style.backgroundImage = 'url(ambigramm/' + selectedImage + ')';
